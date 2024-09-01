@@ -124,24 +124,32 @@ export default function InitialPage() {
       </button>
 
       <div className="mapa-sala">
-        <h2>{nomeSala}</h2>
-        <div className="cadeiras">
-          {mapa.map((aluno, index) => (
-            <textarea
-              key={index}
-              className="cadeira"
-              value={aluno}
-              onChange={(e) => handleEditCadeira(index, e.target.value)}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => handleDrop(index)}
-              placeholder={`Cadeira ${index + 1}`}
-              readOnly={!editMode}
-            />
-          ))}
-        </div>
+  <h2>{nomeSala}</h2>
+  <div className="fila-labels">
+    {Array.from({ length: 6 }, (_, i) => (
+      <div key={i} className="fila-label">
+        Fila {i + 1}
       </div>
+    ))}
+  </div>
+  <div className="cadeiras">
+    {mapa.map((aluno, index) => (
+      <textarea
+        key={index}
+        className="cadeira"
+        value={aluno}
+        onChange={(e) => handleEditCadeira(index, e.target.value)}
+        draggable
+        onDragStart={() => handleDragStart(index)}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={() => handleDrop(index)}
+        placeholder={`Cadeira ${index + 1}`}
+        readOnly={!editMode}
+      />
+    ))}
+  </div>
+</div>
+
 
       <div className="exportar-mapa">
         <label>Escolha o formato de exportação:</label>

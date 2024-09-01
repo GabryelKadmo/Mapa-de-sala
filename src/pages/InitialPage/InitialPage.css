@@ -64,9 +64,20 @@ button:hover {
 
 .mapa-sala h2 {
   margin-bottom: 20px;
-  color: #555;
 }
 
+.fila-labels {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.fila-label {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 20px;
+}
 .cadeiras {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -85,12 +96,14 @@ button:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   height: 80px;
   resize: none;
   overflow-wrap: break-word;
   align-items: center;
   text-align: center;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
 }
 .exportar-mapa {
   display: flex;
