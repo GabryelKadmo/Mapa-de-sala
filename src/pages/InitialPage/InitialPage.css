@@ -164,3 +164,21 @@ button:hover {
   border-radius: 4px;
   padding: 5px 10px;
 }
+.save-icon {
+  background-color: #49aa4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.save-icon:hover {
+  background-color: #e0a800;
+}
+
+.save-icon:active {
+  background-color: #c69500;
+}

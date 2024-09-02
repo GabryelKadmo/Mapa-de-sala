@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as htmlToImage from "html-to-image";
 import jsPDF from "jspdf";
 import { saveAs } from "file-saver";
@@ -13,6 +13,16 @@ export default function InitialPage() {
   const [formatoExportacao, setFormatoExportacao] = useState("image");
   const [editMode, setEditMode] = useState(false);
 
+  useEffect(() => {
+    const mapaAtual = JSON.parse(localStorage.getItem("mapaAtual"));
+    if (mapaAtual) {
+      setNomeSala(mapaAtual.nomeSala);
+      setCadeiras(mapaAtual.cadeiras);
+      setAlunos(mapaAtual.alunos);
+      setMapa(mapaAtual.mapa);
+      localStorage.removeItem("mapaAtual"); // Limpa o mapa atual do localStorage após carregar
+    }
+  }, []);
   const gerarMapa = () => {
     const listaAlunos = alunos
       .split("\n")
@@ -90,6 +100,14 @@ export default function InitialPage() {
     }
   };
 
+  const salvarMapa = () => {
+    const mapasSalvos = JSON.parse(localStorage.getItem("mapasSalvos")) || [];
+    const novoMapa = { nomeSala, cadeiras, alunos, mapa };
+    mapasSalvos.push(novoMapa);
+    localStorage.setItem("mapasSalvos", JSON.stringify(mapasSalvos));
+    alert("Mapa salvo com sucesso!");
+  };
+
   return (
     <div className="initial-page">
       <h1>Gerar Mapa de Sala</h1>
@@ -123,33 +141,34 @@ export default function InitialPage() {
         Gerar Mapa
       </button>
 
-      <div className="mapa-sala">
-  <h2>{nomeSala}</h2>
-  <div className="fila-labels">
-    {Array.from({ length: 6 }, (_, i) => (
-      <div key={i} className="fila-label">
-        Fila {i + 1}
-      </div>
-    ))}
-  </div>
-  <div className="cadeiras">
-    {mapa.map((aluno, index) => (
-      <textarea
-        key={index}
-        className="cadeira"
-        value={aluno}
-        onChange={(e) => handleEditCadeira(index, e.target.value)}
-        draggable
-        onDragStart={() => handleDragStart(index)}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={() => handleDrop(index)}
-        placeholder={`Cadeira ${index + 1}`}
-        readOnly={!editMode}
-      />
-    ))}
-  </div>
-</div>
-
+      {mapa.length > 0 && (
+        <div className="mapa-sala">
+          <h2>{nomeSala}</h2>
+          <div className="fila-labels">
+            {Array.from({ length: 6 }, (_, i) => (
+              <div key={i} className="fila-label">
+                Fila {i + 1}
+              </div>
+            ))}
+          </div>
+          <div className="cadeiras">
+            {mapa.map((aluno, index) => (
+              <textarea
+                key={index}
+                className="cadeira"
+                value={aluno}
+                onChange={(e) => handleEditCadeira(index, e.target.value)}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDrop(index)}
+                placeholder={`Cadeira ${index + 1}`}
+                readOnly={!editMode}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="exportar-mapa">
         <label>Escolha o formato de exportação:</label>
@@ -169,12 +188,17 @@ export default function InitialPage() {
           Exportar Mapa
         </button>
         {mapa.length > 0 && (
-          <button
-            className={`edit-icon ${editMode ? "active" : ""}`}
-            onClick={() => setEditMode(!editMode)}
-          >
-            {editMode ? "Desativar edição ✏️" : "Habilitar edição ✏️"}
-          </button>
+          <>
+            <button
+              className={`edit-icon ${editMode ? "active" : ""}`}
+              onClick={() => setEditMode(!editMode)}
+            >
+              {editMode ? "Desativar edição ✏️" : "Habilitar edição ✏️"}
+            </button>
+            <button className="save-icon" onClick={salvarMapa}>
+              Salvar 💾
+            </button>
+          </>
         )}
       </div>
     </div>

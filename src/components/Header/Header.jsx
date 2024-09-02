@@ -11,9 +11,12 @@ export default function Header() {
         <Link to="/" className="nav-button">
           Home
         </Link>
-        <Link to="/sobre" className="nav-button">
-          Sobre
+        <Link to="/mapas-salvos" className="nav-button">
+          Mapas
         </Link>
+        {/* <Link to="/sobre" className="nav-button">
+          Sobre
+        </Link> */}
       </nav>
     </header>
   );

@@ -1,0 +1,78 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.saved-maps-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 85vh;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.saved-maps-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 600px; /* Ajuste a largura máxima conforme necessário */
+    max-height: 530px; /* Ajuste a altura máxima conforme necessário */
+    overflow-y: auto; /* Adiciona rolagem vertical se necessário */
+}
+
+.saved-map-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #3f3f3f;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.saved-map-item span {
+    flex-grow: 1;
+    text-align: left; /* Centraliza o texto no item */
+    margin-left: 10px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.saved-map-item:hover {
+    opacity: 90%;
+}
+
+.delete-map-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.delete-map-button:hover {
+    color: #ff4d4d;
+}
+.no-saved-maps-message{
+    font-size: 30px;
+    color: #ccc;
+    text-align: center;
+    margin-top: 20px;
+}
