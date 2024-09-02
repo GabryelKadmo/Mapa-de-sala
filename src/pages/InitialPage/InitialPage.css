@@ -60,6 +60,7 @@ button:hover {
   text-align: center;
   overflow: visible;
   padding-bottom: 20px;
+  padding-top: 5px;
 }
 
 .mapa-sala h2 {
@@ -83,11 +84,8 @@ button:hover {
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   margin-bottom: 20px;
-  background-color: #f7f7f7;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  margin-bottom: 40px;
 }
 
 .cadeira {
@@ -110,6 +108,7 @@ button:hover {
   align-items: center;
   gap: 10px;
   justify-content: center;
+  margin-top: 20px;
 }
 
 .exportar-mapa label {
@@ -176,7 +175,7 @@ button:hover {
 }
 
 .save-icon:hover {
-  background-color: #e0a800;
+  opacity: 90%;
 }
 
 .save-icon:active {

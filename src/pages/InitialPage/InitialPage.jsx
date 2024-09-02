@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import * as htmlToImage from "html-to-image";
 import jsPDF from "jspdf";
 import { saveAs } from "file-saver";
+import Swal from "sweetalert2";
 import "./InitialPage.css";
 
 export default function InitialPage() {
@@ -20,9 +21,10 @@ export default function InitialPage() {
       setCadeiras(mapaAtual.cadeiras);
       setAlunos(mapaAtual.alunos);
       setMapa(mapaAtual.mapa);
-      localStorage.removeItem("mapaAtual"); // Limpa o mapa atual do localStorage após carregar
+      localStorage.removeItem("mapaAtual");
     }
   }, []);
+
   const gerarMapa = () => {
     const listaAlunos = alunos
       .split("\n")
@@ -62,15 +64,23 @@ export default function InitialPage() {
 
   const exportarMapa = () => {
     if (mapa.length === 0) {
-      alert("Não há mapa para exportar!");
+      Swal.fire({
+        title: "Erro!",
+        text: "Não há mapa para exportar!",
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       return;
     }
 
     const node = document.querySelector(".mapa-sala");
 
+    node.style.backgroundColor = "#FFFFFF";
+
     switch (formatoExportacao) {
       case "pdf": {
-        htmlToImage.toPng(node).then((dataUrl) => {
+        htmlToImage.toPng(node, { bgcolor: "#FFFFFF" }).then((dataUrl) => {
           const pdf = new jsPDF("p", "mm", "a4");
           pdf.addImage(dataUrl, "PNG", 10, 10, 190, 0);
           pdf.save(`${nomeSala}.pdf`);
@@ -89,23 +99,54 @@ export default function InitialPage() {
       }
       case "image": {
         htmlToImage
-          .toPng(node, { quality: 1, pixelRatio: 2 })
+          .toPng(node, { quality: 1, pixelRatio: 2, bgcolor: "#FFFFFF" })
           .then((dataUrl) => {
             saveAs(dataUrl, `${nomeSala}.png`);
           });
         break;
       }
       default:
-        alert("Formato não suportado!");
+        Swal.fire({
+          title: "Erro!",
+          text: "Formato não suportado!",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false,
+        });
     }
+
+    node.style.backgroundColor = "#fff";
   };
 
   const salvarMapa = () => {
     const mapasSalvos = JSON.parse(localStorage.getItem("mapasSalvos")) || [];
     const novoMapa = { nomeSala, cadeiras, alunos, mapa };
-    mapasSalvos.push(novoMapa);
+
+    const mapaExistenteIndex = mapasSalvos.findIndex(
+      (mapa) => mapa.nomeSala === nomeSala
+    );
+    
+    if (mapaExistenteIndex !== -1) {
+      mapasSalvos[mapaExistenteIndex] = novoMapa;
+      Swal.fire({
+        title: "Atualizado!",
+        text: "Mapa atualizado com sucesso!",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } else {
+      mapasSalvos.push(novoMapa);
+      Swal.fire({
+        title: "Salvo!",
+        text: "Mapa salvo com sucesso!",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+
     localStorage.setItem("mapasSalvos", JSON.stringify(mapasSalvos));
-    alert("Mapa salvo com sucesso!");
   };
 
   return (

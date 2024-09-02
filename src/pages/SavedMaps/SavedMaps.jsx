@@ -29,8 +29,7 @@ export default function SavedMaps() {
       const novosMapas = mapasSalvos.filter((_, i) => i !== index);
       localStorage.setItem("mapasSalvos", JSON.stringify(novosMapas));
       Swal.fire("Excluído!", "O mapa foi excluído com sucesso.", "success");
-      // Atualize a lista de mapas salvos sem recarregar a página
-      navigate(0); // Isso recarrega a página, ou você pode atualizar o estado de outra forma
+      navigate(0);
     }
   };
 

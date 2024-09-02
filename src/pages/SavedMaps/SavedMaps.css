@@ -28,9 +28,9 @@ h1 {
     padding: 0;
     margin: 0;
     width: 100%;
-    max-width: 600px; /* Ajuste a largura máxima conforme necessário */
-    max-height: 530px; /* Ajuste a altura máxima conforme necessário */
-    overflow-y: auto; /* Adiciona rolagem vertical se necessário */
+    max-width: 800px;
+    max-height: 530px; 
+    overflow-y: auto;
 }
 
 .saved-map-item {
@@ -48,9 +48,9 @@ h1 {
 
 .saved-map-item span {
     flex-grow: 1;
-    text-align: left; /* Centraliza o texto no item */
+    text-align: left;
     margin-left: 10px;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 500;
 }
 
