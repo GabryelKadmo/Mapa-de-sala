@@ -1,11 +1,13 @@
-// import React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "./SavedMaps.css";
 
 export default function SavedMaps() {
   const navigate = useNavigate();
-  const mapasSalvos = JSON.parse(localStorage.getItem("mapasSalvos")) || [];
+  const [mapasSalvos, setMapasSalvos] = useState(
+    JSON.parse(localStorage.getItem("mapasSalvos")) || []
+  );
 
   const carregarMapa = (index) => {
     const mapaSelecionado = mapasSalvos[index];
@@ -22,14 +24,14 @@ export default function SavedMaps() {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Não"
+      cancelButtonText: "Não",
     });
 
     if (isConfirmed) {
       const novosMapas = mapasSalvos.filter((_, i) => i !== index);
       localStorage.setItem("mapasSalvos", JSON.stringify(novosMapas));
+      setMapasSalvos(novosMapas); // Atualiza o estado para re-renderizar o componente
       Swal.fire("Excluído!", "O mapa foi excluído com sucesso.", "success");
-      navigate(0);
     }
   };
 
@@ -55,7 +57,6 @@ export default function SavedMaps() {
           </ul>
         )}
       </div>
-    
     </div>
   );
 }

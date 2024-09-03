@@ -125,14 +125,14 @@ export default function InitialPage() {
     const mapaExistenteIndex = mapasSalvos.findIndex(
       (mapa) => mapa.nomeSala === nomeSala
     );
-    
+
     if (mapaExistenteIndex !== -1) {
       mapasSalvos[mapaExistenteIndex] = novoMapa;
       Swal.fire({
         title: "Atualizado!",
         text: "Mapa atualizado com sucesso!",
         icon: "success",
-        timer: 2000,
+        timer: 1000,
         showConfirmButton: false,
       });
     } else {
@@ -141,7 +141,7 @@ export default function InitialPage() {
         title: "Salvo!",
         text: "Mapa salvo com sucesso!",
         icon: "success",
-        timer: 2000,
+        timer: 1000,
         showConfirmButton: false,
       });
     }
@@ -166,7 +166,7 @@ export default function InitialPage() {
         <input
           type="number"
           value={cadeiras}
-          onChange={(e) => setCadeiras(e.target.value)}
+          onChange={(e) => setCadeiras(Math.max(0, e.target.value))}
           placeholder="Digite o número de cadeiras"
         />
       </div>
@@ -218,8 +218,8 @@ export default function InitialPage() {
           onChange={(e) => setFormatoExportacao(e.target.value)}
         >
           <option value="image">Imagem (PNG)</option>
-          <option value="pdf">PDF</option>
-          <option value="doc">DOC</option>
+          {/* <option value="pdf">PDF</option> */}
+          {/* <option value="doc">DOC</option> */}
         </select>
         <button
           onClick={exportarMapa}
