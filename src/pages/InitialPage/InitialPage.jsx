@@ -1,244 +1,66 @@
-import { useState, useEffect } from "react";
-import * as htmlToImage from "html-to-image";
-import jsPDF from "jspdf";
-import { saveAs } from "file-saver";
-import Swal from "sweetalert2";
+import { FormularioMapa } from "../../hooks/FormularioMapa";
+import { MapaSala } from "../../hooks/MapaSala";
+import { ControlesMapa } from "../../hooks/ControlesMapa";
+import { useMapaSala } from "../../hooks/useMapaSala";
 import "./InitialPage.css";
 
 export default function InitialPage() {
-  const [nomeSala, setNomeSala] = useState("");
-  const [cadeiras, setCadeiras] = useState(0);
-  const [alunos, setAlunos] = useState("");
-  const [mapa, setMapa] = useState([]);
-  const [draggingIndex, setDraggingIndex] = useState(null);
-  const [formatoExportacao, setFormatoExportacao] = useState("image");
-  const [editMode, setEditMode] = useState(false);
-
-  useEffect(() => {
-    const mapaAtual = JSON.parse(localStorage.getItem("mapaAtual"));
-    if (mapaAtual) {
-      setNomeSala(mapaAtual.nomeSala);
-      setCadeiras(mapaAtual.cadeiras);
-      setAlunos(mapaAtual.alunos);
-      setMapa(mapaAtual.mapa);
-      localStorage.removeItem("mapaAtual");
-    }
-  }, []);
-
-  const gerarMapa = () => {
-    const listaAlunos = alunos
-      .split("\n")
-      .map((aluno) => aluno.trim())
-      .filter((aluno) => aluno !== "");
-    const alunosEmbaralhados = listaAlunos.sort(() => Math.random() - 0.5);
-    const novoMapa = [];
-
-    for (let i = 0; i < cadeiras; i++) {
-      novoMapa.push(alunosEmbaralhados[i] || "");
-    }
-
-    setMapa(novoMapa);
-  };
-
-  const handleEditCadeira = (index, novoValor) => {
-    const novoMapa = [...mapa];
-    novoMapa[index] = novoValor;
-    setMapa(novoMapa);
-  };
-
-  const handleDragStart = (index) => {
-    setDraggingIndex(index);
-  };
-
-  const handleDrop = (index) => {
-    if (draggingIndex !== null && draggingIndex !== index) {
-      const novoMapa = [...mapa];
-      [novoMapa[draggingIndex], novoMapa[index]] = [
-        novoMapa[index],
-        novoMapa[draggingIndex],
-      ];
-      setMapa(novoMapa);
-    }
-    setDraggingIndex(null);
-  };
-
-  const exportarMapa = () => {
-    if (mapa.length === 0) {
-      Swal.fire({
-        title: "Erro!",
-        text: "Não há mapa para exportar!",
-        icon: "error",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
-    const node = document.querySelector(".mapa-sala");
-
-    node.style.backgroundColor = "#FFFFFF";
-
-    switch (formatoExportacao) {
-      case "pdf": {
-        htmlToImage.toPng(node, { bgcolor: "#FFFFFF" }).then((dataUrl) => {
-          const pdf = new jsPDF("p", "mm", "a4");
-          pdf.addImage(dataUrl, "PNG", 10, 10, 190, 0);
-          pdf.save(`${nomeSala}.pdf`);
-        });
-        break;
-      }
-      case "doc": {
-        const blob = new Blob(
-          [document.querySelector(".mapa-sala").outerHTML],
-          {
-            type: "application/msword",
-          }
-        );
-        saveAs(blob, `${nomeSala}.doc`);
-        break;
-      }
-      case "image": {
-        htmlToImage
-          .toPng(node, { quality: 1, pixelRatio: 2, bgcolor: "#FFFFFF" })
-          .then((dataUrl) => {
-            saveAs(dataUrl, `${nomeSala}.png`);
-          });
-        break;
-      }
-      default:
-        Swal.fire({
-          title: "Erro!",
-          text: "Formato não suportado!",
-          icon: "error",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-    }
-
-    node.style.backgroundColor = "#fff";
-  };
-
-  const salvarMapa = () => {
-    const mapasSalvos = JSON.parse(localStorage.getItem("mapasSalvos")) || [];
-    const novoMapa = { nomeSala, cadeiras, alunos, mapa };
-
-    const mapaExistenteIndex = mapasSalvos.findIndex(
-      (mapa) => mapa.nomeSala === nomeSala
-    );
-
-    if (mapaExistenteIndex !== -1) {
-      mapasSalvos[mapaExistenteIndex] = novoMapa;
-      Swal.fire({
-        title: "Atualizado!",
-        text: "Mapa atualizado com sucesso!",
-        icon: "success",
-        timer: 1000,
-        showConfirmButton: false,
-      });
-    } else {
-      mapasSalvos.push(novoMapa);
-      Swal.fire({
-        title: "Salvo!",
-        text: "Mapa salvo com sucesso!",
-        icon: "success",
-        timer: 1000,
-        showConfirmButton: false,
-      });
-    }
-
-    localStorage.setItem("mapasSalvos", JSON.stringify(mapasSalvos));
-  };
+  const {
+    salas,
+    setSalas,
+    nomeMapa,
+    setNomeMapa,
+    cadeiras,
+    setCadeiras,
+    mapa,
+    distribuirAlunos,
+    handleEditCadeira,
+    handleDragStart,
+    handleDrop,
+    formatoExportacao,
+    setFormatoExportacao,
+    editMode,
+    setEditMode,
+    exportarMapa,
+    salvarMapa,
+    removerSala,
+  } = useMapaSala();
 
   return (
-    <div className="initial-page">
-      <h1>Gerar Mapa de Sala</h1>
-      <div className="input-group">
-        <label>Nome da Sala:</label>
-        <input
-          type="text"
-          value={nomeSala}
-          onChange={(e) => setNomeSala(e.target.value)}
-          placeholder="Digite o nome da sala"
+    <div className="app-container">
+      <div className="main-content">
+        <FormularioMapa
+          nomeMapa={nomeMapa}
+          setNomeMapa={setNomeMapa}
+          cadeiras={cadeiras}
+          setCadeiras={setCadeiras}
+          salas={salas}
+          setSalas={setSalas}
+          distribuirAlunos={distribuirAlunos}
+          removerSala={removerSala}
         />
-      </div>
-      <div className="input-group">
-        <label>Quantidade de Cadeiras:</label>
-        <input
-          type="number"
-          value={cadeiras}
-          onChange={(e) => setCadeiras(Math.max(0, e.target.value))}
-          placeholder="Digite o número de cadeiras"
-        />
-      </div>
-      <div className="input-group">
-        <label>Lista de Alunos (um por linha):</label>
-        <textarea
-          value={alunos}
-          onChange={(e) => setAlunos(e.target.value)}
-          placeholder="Cole a lista de nomes dos alunos, um por linha"
-        />
-      </div>
-      <button className="GenerateMapButton" onClick={gerarMapa}>
-        Gerar Mapa
-      </button>
 
-      {mapa.length > 0 && (
-        <div className="mapa-sala">
-          <h2>{nomeSala}</h2>
-          <div className="fila-labels">
-            {Array.from({ length: 6 }, (_, i) => (
-              <div key={i} className="fila-label">
-                Fila {i + 1}
-              </div>
-            ))}
-          </div>
-          <div className="cadeiras">
-            {mapa.map((aluno, index) => (
-              <textarea
-                key={index}
-                className="cadeira"
-                value={aluno}
-                onChange={(e) => handleEditCadeira(index, e.target.value)}
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => handleDrop(index)}
-                placeholder={`Cadeira ${index + 1}`}
-                readOnly={!editMode}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="exportar-mapa">
-        <label>Escolha o formato de exportação:</label>
-        <select
-          value={formatoExportacao}
-          onChange={(e) => setFormatoExportacao(e.target.value)}
-        >
-          <option value="image">Imagem (PNG)</option>
-          {/* <option value="pdf">PDF</option> */}
-          {/* <option value="doc">DOC</option> */}
-        </select>
-        <button
-          onClick={exportarMapa}
-          className="botao-exportar"
-          disabled={mapa.length === 0}
-        >
-          Exportar Mapa
-        </button>
         {mapa.length > 0 && (
           <>
-            <button
-              className={`edit-icon ${editMode ? "active" : ""}`}
-              onClick={() => setEditMode(!editMode)}
-            >
-              {editMode ? "Desativar edição ✏️" : "Habilitar edição ✏️"}
-            </button>
-            <button className="save-icon" onClick={salvarMapa}>
-              Salvar 💾
-            </button>
+            <MapaSala
+              nomeMapa={nomeMapa}
+              mapa={mapa}
+              salas={salas}
+              editMode={editMode}
+              handleEditCadeira={handleEditCadeira}
+              handleDragStart={handleDragStart}
+              handleDrop={handleDrop}
+            />
+
+            <ControlesMapa
+              mapa={mapa}
+              editMode={editMode}
+              setEditMode={setEditMode}
+              exportarMapa={exportarMapa}
+              salvarMapa={salvarMapa}
+              formatoExportacao={formatoExportacao}
+              setFormatoExportacao={setFormatoExportacao}
+            />
           </>
         )}
       </div>
