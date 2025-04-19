@@ -121,7 +121,7 @@ export function FormularioMapa({
         </div>
       </div>
 
-      <div className="actions">
+      <div className="actions" style={{ marginTop: "20px" }}>
         <button
           onClick={distribuirAlunos}
           className="generate-button"
