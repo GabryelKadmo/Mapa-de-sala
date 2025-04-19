@@ -209,13 +209,26 @@ export function useMapaSala() {
                 <meta charset="UTF-8">
                 <title>${nomeMapa || "Mapa de Sala"}</title>
                 <style>
-                  body { font-family: Arial, sans-serif; margin: 2cm; }
-                  h1 { text-align: center; margin-bottom: 20px; font-size: 16pt; }
+                  @page {
+                    size: landscape;
+                    margin: 2cm;
+                  }
+                  body { 
+                    font-family: Arial, sans-serif; 
+                    margin: 0;
+                    padding: 0;
+                  }
+                  h1 { 
+                    text-align: center; 
+                    margin-bottom: 20px; 
+                    font-size: 16pt; 
+                  }
                   table { 
                     border-collapse: collapse; 
                     width: 100%; 
                     margin-top: 20px;
                     font-size: 10pt;
+                    table-layout: fixed;
                   }
                   th, td { 
                     border: 1px solid #000; 
